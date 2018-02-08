@@ -2,9 +2,22 @@
 // Andrew Lynch
 // January 30, 2018
 
+//test
+
 // Set the number to whichever part you're currently useing
 // i.e. for part two "STEP_NUMBER 2"
 #define STEP_NUMBER 1
+
+
+#include <Wire.h>
+#include "rgb_lcd.h"
+
+rgb_lcd lcd;
+
+const int colorR = 255;
+const int colorG = 0;
+const int colorB = 0;
+
 
 bool check_failure(int);
 int psuedo_random(void);
@@ -27,6 +40,10 @@ void sensor_init(void)
   {
     //your code here
 
+    // Print a message to the LCD.
+    lcd.print("sensor failure");
+
+    delay(1000);
     failure();
   }
 }
@@ -37,6 +54,10 @@ void actuator_init(void)
   {
     //your code here
 
+    // Print a message to the LCD.
+    lcd.print("actuator failure");
+
+    delay(1000);
     failure();
   }
 }
@@ -47,15 +68,25 @@ void wifi_init(void)
   {
     //your code here
 
+    // Print a message to the LCD.
+    lcd.print("wifi failure");
+
+    delay(1000);
+
     failure();
   }
 }
 
 void setup(void)
 {
+     lcd.begin(16, 2);
+    
+    lcd.setRGB(colorR, colorG, colorB);
+  pinMode(13, OUTPUT);
   sensor_init();
   actuator_init();
   wifi_init(); 
+
 }
 
 void loop(void){
@@ -73,6 +104,7 @@ void setup(void)
 {
     Serial.begin(9600);
     Serial.println("Serial monitor is working!");
+
 }
 
 void loop(void)
@@ -145,7 +177,7 @@ void failure(void)
 
 bool check_failure(int num)
 {
-  if(!(psuedo_random() % num))
+  if((psuedo_random() % num))
   {
     return true;
   }
