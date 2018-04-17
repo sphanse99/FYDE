@@ -11,7 +11,9 @@ int speaker = 7;
 int light = 8;
 int sensorPin = 3; //define switch port
 int val;//define digital variable val
-int check = 0;
+int check;
+int arm = 0;
+int blynk = 19;
 
 rgb_lcd lcd;
 
@@ -28,14 +30,28 @@ void setup(){
     lcd.print("You Gucci");
 
   pinMode(13, OUTPUT);
+  pinMode(blynk, INPUT);
+  check = 0;
 }
 
 void loop(){ 
   val=digitalRead(sensorPin);//read the value of the digital interface 3 assigned to val 
+  int disarm = digitalRead(blynk);
+
+  while(disarm == LOW){
+    colorR = 0;
+    colorG = 255;
+    colorB = 0;
+    lcd.setCursor(0, 0);
+    lcd.setRGB(colorR, colorG, colorB);
+    lcd.print("Disarmed       ");
+    digitalWrite(speaker,LOW);
+    digitalWrite(light, HIGH);
+  }
   
   Serial.println(val);
   
-  if(val==HIGH && check == 0){
+  if(val==LOW && check == 0){
     digitalWrite(speaker,HIGH);
     digitalWrite(light,HIGH);
     colorR = 255;
@@ -45,19 +61,19 @@ void loop(){
     lcd.setRGB(colorR, colorG, colorB);
     lcd.print("FUCK OFF, THIEF!");
     check = 1;
-  }else if(val == HIGH && check == 1){
   }else if(val == LOW && check == 1){
+  }else if(val == HIGH && check == 1){
     digitalWrite(speaker,LOW);
     digitalWrite(light, LOW);
 
     colorR = 0;
-    colorG = 255;
-    colorB = 0;
+    colorG = 0;
+    colorB = 255;
     lcd.setCursor(0, 0);
     lcd.setRGB(colorR, colorG, colorB);
-    lcd.print("You Gucci       ");
+    lcd.print("Armed           ");
     check = 0;
-  }else if(val == LOW && check == 0){
+  }else if(val == HIGH && check == 0){
   }
   Serial.println(check);
 }
